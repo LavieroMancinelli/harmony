@@ -4,6 +4,7 @@
  import { PrismaClient } from "@prisma/client";
  import authRoutes from "./routes/auth";
  import messageRoutes from "./routes/messageRoutes";
+ import userRoutes from "./routes/userRoutes";
 
  dotenv.config();
  const app = express();
@@ -14,6 +15,7 @@
 
  app.use("/auth", authRoutes);
  app.use("/messages", messageRoutes);
+ app.use("/users", userRoutes);
 
  app.get("/", (_req: Request, res: Response) => {
    res.send("Harmony backend running");
