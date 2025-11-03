@@ -7,7 +7,7 @@ import './App.css'
 export default function App() {
   return (
     <BrowserRouter>
-      <nav className="p-4 bg-gray-100 flex gap-4">
+      <nav className="navbar">
         <Link to="/signup">Signup</Link>
         <Link to="/login">Login</Link>
         <Link to="/messages">Messages</Link>

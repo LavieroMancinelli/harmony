@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const router = Router();
 const prisma = new PrismaClient();
 
-const JWT_SECRET = process.env.JWT_SECRET || "secretkey"
+const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
 router.post("/signup", async (req: Request, res: Response) => {
     const { email, password, username } = req.body;

@@ -3,6 +3,7 @@ import axiosClient from "../api/axiosClient";
 
 export default function Signup() {
     const [messages, setMessages] = useState<any[]>([]);
+    const [newMessage, setNewMessage] = useState("");
 
     useEffect(() => {
         async function fetchMessages() {
@@ -10,19 +11,54 @@ export default function Signup() {
                 const res = await axiosClient.get("/messages");
                 setMessages(res.data);
             } catch (err) {
-                console.error("Error fecthing messages", err);
+                console.error("Error fetching messages", err);
             }
         }
         fetchMessages();
     }, []);
 
+    async function handleSendMessage(e: React.FormEvent) {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("You must be logged in to post a message!");
+            return;
+        }
+
+        try {
+            await axiosClient.post(
+                "/messages",
+                { content: newMessage },
+                { headers: { Authorization: `Bearer ${token}`  } }
+            );
+            setNewMessage("");
+            const res = await axiosClient.get("/messages");
+            setMessages(res.data);
+        } catch (err) {
+            console.error("Error posting message", err);
+            alert("Failed to send message");
+        }
+    }
+
     return (
-        <div className="message-container">
-            <h2 className="message-title">Messages</h2>
-            <ul>
+        <div className="message-page">
+            <h2 className="message-page-title">Messages</h2>
+
+            <form className="message-form" onSubmit={handleSendMessage}>
+                <textarea 
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    className="message-input"
+                    />
+                <button type="submit" className="send-button">Send</button>
+            </form>
+
+            <ul className="message-list">
                 {messages.map((msg) => (
                     <li key={msg.id} className="message-item">
-                        {msg.content}
+                        <strong>{msg.user?.username || msg.user?.email || "Unknown User"}:</strong> {msg.content}
                     </li>
                 ))}
             </ul>
