@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import { io } from "socket.io-client";
 
 export default function Signup() {
     const [messages, setMessages] = useState<any[]>([]);
     const [newMessage, setNewMessage] = useState("");
+    const socket = io("https://effective-space-fiesta-6944jwqq7v45f54v7-4000.app.github.dev");
 
     useEffect(() => {
         async function fetchMessages() {
@@ -15,6 +17,13 @@ export default function Signup() {
             }
         }
         fetchMessages();
+        const handleNewMessage = (msg: any) => {
+            setMessages((prev) => [msg, ...prev]);
+        }
+
+        socket.on("newMessage", handleNewMessage);
+
+        return () => { socket.off("newMessage", handleNewMessage) };
     }, []);
 
     async function handleSendMessage(e: React.FormEvent) {
